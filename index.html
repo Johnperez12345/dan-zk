@@ -27,9 +27,10 @@
         }
         .menu-icon {
             font-size: 28px;
-            color: #374151;
-            cursor: pointer;
+            color: #C7C7CC; /* ✅ KULAY GRAY — HINDI MAPIPINDOT */
+            cursor: not-allowed; /* ✅ BAWAL PINDUTIN */
             font-weight: 600;
+            opacity: 0.6;
         }
         .saldo-box {
             background: #EFF6FF;
@@ -60,23 +61,44 @@
             gap: 14px;
         }
 
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            padding: 16px 20px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .tab {
+            padding: 12px 24px;
+            font-size: 17px;
+            font-weight: 500;
+            color: #6B7280;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            color: #2563EB;
+            border-bottom: 3px solid #2563EB;
+        }
+
         /* ===== MAIN CONTENT ===== */
         .container {
-            padding: 32px 20px;
+            padding: 24px 20px;
             max-width: 700px;
             margin: 0 auto;
         }
+        .page { display: none; }
+        .page.active { display: block; }
+
         .section-title {
-            font-size: 40px;
+            font-size: 32px;
             font-weight: 700;
             color: #111827;
             margin-bottom: 8px;
-            line-height: 1.2;
         }
         .section-subtitle {
-            font-size: 18px;
+            font-size: 17px;
             color: #6B7280;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
         /* ===== GENERATE BUTTON ===== */
@@ -101,116 +123,178 @@
             background: #1D4ED8;
         }
 
+        /* ===== FORM MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            padding: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .modal-subtitle {
+            font-size: 15px;
+            color: #6B7280;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-size: 15px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+        .form-input:focus { border-color: #2563EB; }
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+        .col { flex: 1; }
+        .select-box {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            outline: none;
+        }
+        .btn-save {
+            width: 100%;
+            background: #2563EB;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .btn-save:hover { background: #1D4ED8; }
+        .btn-cancel {
+            width: 100%;
+            background: #F3F4F6;
+            color: #374151;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
         /* ===== KEYS TABLE ===== */
         .keys-table {
             background: #FFFFFF;
             border-radius: 14px;
             border: 1px solid #E5E7EB;
-            overflow: visible; /* ✅ HINDI PUTOL ANG MENU */
+            overflow: visible;
         }
         .table-header {
             display: flex;
             background: #F9FAFB;
-            padding: 18px 22px;
+            padding: 16px 20px;
             font-weight: 600;
             color: #1F2937;
-            font-size: 20px;
+            font-size: 15px;
             border-bottom: 1px solid #E5E7EB;
         }
-        .col-key { width: 55%; }
-        .col-status { width: 45%; text-align: right; }
+        .col-key { width: 40%; }
+        .col-usage { width: 25%; text-align: center; }
+        .col-status { width: 35%; text-align: right; }
         .table-row {
             display: flex;
-            padding: 22px;
+            padding: 18px 20px;
             align-items: center;
-            position: relative; /* ✅ PARA SA MENU */
+            border-bottom: 1px solid #E5E7EB;
         }
+        .table-row:last-child { border-bottom: none; }
         .key-name {
-            width: 55%;
+            width: 40%;
             color: #22C55E;
             font-weight: 600;
-            font-size: 20px;
+            font-size: 15px;
+        }
+        .usage-col {
+            width: 25%;
+            text-align: center;
+            font-size: 14px;
+            color: #4B5563;
+            font-weight: 500;
         }
         .status-col {
-            width: 45%;
+            width: 35%;
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
-
-        /* ✅ FIXED: COMPLETE TOGGLE SWITCH */
         .status-toggle {
-            width: 52px;
-            height: 28px;
+            width: 48px;
+            height: 26px;
             background: #3B82F6;
-            border-radius: 14px;
+            border-radius: 13px;
             position: relative;
             cursor: pointer;
             flex-shrink: 0;
         }
+        .status-toggle.off { background: #D1D5DB; }
         .status-toggle::after {
             content: '';
             position: absolute;
             top: 3px;
             right: 3px;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             background: white;
             border-radius: 50%;
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
+        .status-toggle.off::after { right: auto; left: 3px; }
         .status-label {
             background: #3B82F6;
             color: white;
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 6px 14px;
+            border-radius: 7px;
+            font-size: 14px;
             font-weight: 500;
             white-space: nowrap;
         }
-
-        /* ✅ FIXED: CLEARER ⋯ BUTTON */
-        .actions-btn {
-            color: #6B7280;
-            font-size: 26px;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 8px 12px; /* ✅ MAS MALAKING HITBOX */
-            line-height: 1;
-            user-select: none;
-            border-radius: 6px;
-        }
-        .actions-btn:hover {
-            background: #F3F4F6;
-        }
-
-        /* ✅ FIXED: DROPDOWN MENU — HINDI LUMALABAS */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 40px;
-            background: white;
-            min-width: 200px;
-            border-radius: 10px;
-            border: 1px solid #E5E7EB;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-            z-index: 9999; /* ✅ NASA TAAS NG LAHAT */
-        }
-        .dropdown-menu.show { display: block; }
-        .dropdown-item {
-            padding: 14px 20px;
-            font-size: 16px;
-            color: #1F2937;
-            cursor: pointer;
-        }
-        .dropdown-item:hover { background: #F3F4F6; }
-        .dropdown-item.danger { color: #DC2626; }
+        .status-label.off { background: #6B7280; }
+        .status-label.limit { background: #EF4444; } /* ✅ MAX DEVICES REACHED */
 
         /* ===== PAGINATION ===== */
         .pagination {
@@ -220,24 +304,22 @@
             margin-top: 24px;
         }
         .page-btn {
-            padding: 12px 28px;
+            padding: 10px 24px;
             border: 1px solid #D1D5DB;
             background: white;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 15px;
             color: #374151;
             cursor: pointer;
         }
-        .page-btn:hover {
-            background: #F3F4F6;
-        }
+        .page-btn:hover { background: #F3F4F6; }
     </style>
 </head>
 <body>
 
-    <!-- ===== TOP BAR ===== -->
+    <!-- ===== TOP BAR — ☰ BAWAL PINDUTIN ===== -->
     <div class="top-bar">
-        <div class="menu-icon">☰</div>
+        <div class="menu-icon">☰</div> <!-- ✅ GRAY = HINDI MAPIPINDOT -->
         <div class="top-right">
             <div class="saldo-box">∞ Saldo</div>
             <div class="user-avatar">
@@ -246,93 +328,164 @@
         </div>
     </div>
 
+    <!-- ===== TABS: KEY MANAGEMENT | KEY STATUS ===== -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('management')">Key Management</div>
+        <div class="tab" onclick="switchTab('status')">Key Status</div>
+    </div>
+
     <!-- ===== MAIN CONTENT ===== -->
     <div class="container">
-        <h1 class="section-title">Key Management</h1>
-        <p class="section-subtitle">Generate, view, and manage your keys.</p>
 
-        <!-- GENERATE BUTTON -->
-        <button class="generate-btn" onclick="generateKey()">
-            ➕ Generate Key
-        </button>
+        <!-- ===== KEY MANAGEMENT PAGE ===== -->
+        <div id="page-management" class="page active">
+            <h1 class="section-title">Key Management</h1>
+            <p class="section-subtitle">Generate, view, and manage your keys.</p>
 
-        <!-- KEYS TABLE -->
-        <div class="keys-table">
-            <div class="table-header">
-                <div class="col-key">Key 🔍</div>
-                <div class="col-status">Status</div>
-            </div>
+            <button class="generate-btn" onclick="openModal()">
+                ➕ Generate Key
+            </button>
 
-            <div class="table-row">
-                <div class="key-name">YUKI_NEWKEY</div>
-                <div class="status-col">
-                    <div class="status-toggle" onclick="toggleStatus(this)"></div>
-                    <span class="status-label">Active</span>
-                    <div class="dropdown">
-                        <span class="actions-btn" onclick="toggleMenu(event)">⋯</span>
-                        <div class="dropdown-menu" id="actionMenu">
-                            <div class="dropdown-item" style="font-weight:600; color:#6B7280; cursor:default;">Actions</div>
-                            <div class="dropdown-item" onclick="copyKey()">📋 Copy Key</div>
-                            <div class="dropdown-item">✏️ Edit Key Details</div>
-                            <div class="dropdown-item danger" onclick="deleteKey()">🗑️ Delete Key</div>
-                        </div>
+            <div class="keys-table">
+                <div class="table-header">
+                    <div class="col-key">Key</div>
+                    <div class="col-usage">Usage</div>
+                    <div class="col-status">Status</div>
+                </div>
+                <!-- SAMPLE KEY -->
+                <div class="table-row">
+                    <div class="key-name">YUKI_NEWKEY</div>
+                    <div class="usage-col">5 / 50</div>
+                    <div class="status-col">
+                        <div class="status-toggle" onclick="toggleStatus(this)"></div>
+                        <span class="status-label">Active</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- PAGINATION -->
-        <div class="pagination">
-            <button class="page-btn">Previous</button>
-            <button class="page-btn">Next</button>
+        <!-- ===== KEY STATUS PAGE ===== -->
+        <div id="page-status" class="page">
+            <h1 class="section-title">Key Status</h1>
+            <p class="section-subtitle">View all your keys and devices used.</p>
+
+            <div class="keys-table" id="keysList">
+                <div class="table-header">
+                    <div class="col-key">Key</div>
+                    <div class="col-usage">Usage</div>
+                    <div class="col-status">Status</div>
+                </div>
+                <!-- ✅ MGA NA GENERATE NA KEY AY LILIPAT DITO -->
+                <div class="table-row">
+                    <div class="key-name">YUKI_NEWKEY</div>
+                    <div class="usage-col">2 / 2</div> <!-- ✅ MAX 2 DEVICES -->
+                    <div class="status-col">
+                        <div class="status-toggle"></div>
+                        <span class="status-label limit">LIMIT REACHED</span> <!-- ✅ PULA = HINDI NA GAGANA -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== GENERATE KEY FORM MODAL ===== -->
+    <div class="modal-overlay" id="generateModal">
+        <div class="modal">
+            <h2 class="modal-title">Generate New Key</h2>
+            <p class="modal-subtitle">Fill in details to create key for PUBG</p>
+
+            <div class="form-group">
+                <label class="form-label">User Key (Optional)</label>
+                <input type="text" class="form-input" id="customKey" placeholder="Leave blank for random">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Duration</label>
+                <div class="row">
+                    <div class="col">
+                        <input type="number" class="form-input" id="durationVal" placeholder="e.g. 7" min="1">
+                    </div>
+                    <div class="col">
+                        <select class="select-box" id="durationType">
+                            <option value="days" selected>Days</option>
+                            <option value="hours">Hours</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Max Devices</label>
+                <select class="select-box" id="maxDevices">
+                    <option value="1">1 Device</option>
+                    <option value="2" selected>2 Devices</option> <!-- ✅ DEFAULT 2 -->
+                    <option value="3">3 Devices</option>
+                    <option value="5">5 Devices</option>
+                    <option value="10">10 Devices</option>
+                </select>
+            </div>
+
+            <button class="btn-save" onclick="saveKey()">💾 Save Key</button>
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
     <script>
-        // ✅ TOGGLE DROPDOWN — FIXED
-        function toggleMenu(e) {
-            e.stopPropagation(); // ✅ HINDI AGAD NAGSASARA
-            document.getElementById("actionMenu").classList.toggle("show");
+        let generatedKeys = []; // ✅ LILIPAT DITO ANG MGA NA GENERATE
+
+        // ✅ SWITCH TABS
+        function switchTab(name) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('page-' + name).classList.add('active');
         }
 
-        // ✅ GENERATE KEY
-        function generateKey() {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let random = "";
-            for(let i=0; i<8; i++) random += chars[Math.floor(Math.random()*chars.length)];
-            const newKey = "YUKI_" + random;
-            alert("✅ KEY GENERATED!\n\n" + newKey);
+        // ✅ BUKAS/TARA MODAL
+        function openModal() {
+            document.getElementById("generateModal").classList.add("show");
+        }
+        function closeModal() {
+            document.getElementById("generateModal").classList.remove("show");
         }
 
-        // ✅ COPY KEY
-        function copyKey() {
-            navigator.clipboard.writeText("YUKI_NEWKEY");
-            alert("✅ KEY COPIED!\n\nYUKI_NEWKEY");
-            closeMenu();
+        // ✅ GENERATE KEY — MAY DURATION + MAX DEVICES
+        function saveKey() {
+            let customName = document.getElementById("customKey").value.trim();
+            let durVal = document.getElementById("durationVal").value || "7";
+            let durType = document.getElementById("durationType").value;
+            let maxDev = parseInt(document.getElementById("maxDevices").value);
+
+            // ✅ KEY NAME: KUNG WALANG ILAGAY → RANDOM
+            let keyName = customName || "YUKI_" + Math.random().toString(36).substr(2,8).toUpperCase();
+
+            // ✅ IDAGDAG SA KEY STATUS LIST
+            const keysList = document.getElementById("keysList");
+            const newRow = document.createElement("div");
+            newRow.className = "table-row";
+            newRow.innerHTML = `
+                <div class="key-name">${keyName}</div>
+                <div class="usage-col">0 / ${maxDev}</div>
+                <div class="status-col">
+                    <div class="status-toggle"></div>
+                    <span class="status-label">Active</span>
+                </div>
+            `;
+            keysList.appendChild(newRow);
+
+            alert("✅ KEY GENERATED!\n\n🔑 Key: " + keyName + "\n⏱️ Duration: " + durVal + " " + durType + "\n👥 Max Devices: " + maxDev + "\n\n✅ NA LIPAT SA KEY STATUS!");
+            
+            closeModal();
+            // ✅ AUTO LIPAT SA KEY STATUS PAGE
+            switchTab('status');
+            document.querySelectorAll('.tab')[1].classList.add('active');
         }
 
-        // ✅ DELETE KEY
-        function deleteKey() {
-            if(confirm("⚠️ Delete this key?")) {
-                alert("✅ KEY DELETED!");
-            }
-            closeMenu();
+        // ✅ KAPAG NA-ABOT NA ANG MAX DEVICES → MAGIGING PULA = HINDI NA GAGANA
+        function simulateUsage() {
+            alert("⚠️ MAX DEVICES REACHED!\n\n❌ HINDI NA GAGANA ANG KEY NA ITO!");
         }
-
-        // ✅ TOGGLE STATUS
-        function toggleStatus(el) {
-            alert("✅ Status toggled!");
-        }
-
-        // ✅ CLOSE MENU
-        function closeMenu() {
-            document.getElementById("actionMenu").classList.remove("show");
-        }
-
-        // ✅ CLOSE MENU WHEN CLICK ANYWHERE
-        document.addEventListener("click", function() {
-            closeMenu();
-        });
     </script>
 </body>
 </html>
