@@ -1,86 +1,44 @@
-// ✅ API /api/verify — GUMAGANA SA REDIS! WALANG DOBLE NA LINK!
+// ✅ API /api/verify — MAS MABILIS! AGAD ANG RESPONSE!
+let LICENSES = {
+    "CODM-TESTKEY12": { active: true, game: "CODM", createdAt: Date.now() }
+};
+
 export default async function handler(req, res) {
-    const { action, game, user_key, serial, status, delete_key, days } = req.query;
+    const { action, game, user_key, serial, status, delete_key } = req.query;
 
-    // ✅ I-SIMULA ANG LISTAHAN NG KEYS
-    let LICENSES = {
-        "CODM-TESTKEY12": { active: true, game: "CODM", createdAt: Date.now() }
-    };
-
-    // ✅ GENERATE NEW KEY
+    // ✅ GENERATE — AGAD ANG RESPONSE!
     if (action === "generate") {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let random = "";
-        for (let i = 0; i < 10; i++) {
-            random += chars[Math.floor(Math.random() * chars.length)];
-        }
-        const newKey = `${game || "CODM"}-${random}`;
-        LICENSES[newKey] = {
-            active: true,
-            game: game || "CODM",
-            createdAt: Date.now()
-        };
-        return res.status(200).json({
-            status: "GENERATED",
-            key: newKey,
-            game: game || "CODM",
-            message: "✅ Bagong Key NABUO NA! I-COPY MO AGAD!"
-        });
+        let r = "";
+        for (let i = 0; i < 10; i++) r += chars[Math.floor(Math.random() * chars.length)];
+        const newKey = `${game || "CODM"}-${r}`;
+        LICENSES[newKey] = { active: true, game: game || "CODM", createdAt: Date.now() };
+        return res.status(200).json({ status: "GENERATED", key: newKey, message: "✅ BAGONG KEY NABUO!" });
     }
 
-    // ✅ I-LIST ANG LAHAT NG KEYS
+    // ✅ LIST — AGAD!
     if (action === "list") {
-        return res.status(200).json({
-            status: "SUCCESS",
-            totalKeys: Object.keys(LICENSES).length,
-            keys: LICENSES
-        });
+        return res.status(200).json({ status: "SUCCESS", totalKeys: Object.keys(LICENSES).length, keys: LICENSES });
     }
 
-    // ✅ I-ON / I-OFF ANG KEY
+    // ✅ ON/OFF — AGAD!
     if (action === "set-status" && user_key) {
-        if (!LICENSES[user_key]) {
-            return res.status(200).json({ status: "NOTFOUND", message: "❌ Hindi mahanap ang Key" });
-        }
+        if (!LICENSES[user_key]) return res.status(200).json({ status: "NOTFOUND", message: "❌ Hindi mahanap" });
         LICENSES[user_key].active = (status === "true" || status === "1");
-        return res.status(200).json({
-            status: "UPDATED",
-            key: user_key,
-            active: LICENSES[user_key].active,
-            message: LICENSES[user_key].active ? "✅ KEY NA-ACTIVATE NA!" : "⚠️ KEY NA-DEACTIVATE NA!"
-        });
+        return res.status(200).json({ status: "UPDATED", active: LICENSES[user_key].active, message: "✅ NA-UPDATE!" });
     }
 
-    // ✅ I-DELETE ANG KEY
+    // ✅ DELETE — AGAD NAWAWALA!
     if (action === "delete" && delete_key) {
-        if (!LICENSES[delete_key]) {
-            return res.status(200).json({ status: "NOTFOUND", message: "❌ Hindi mahanap ang Key" });
-        }
-        delete LICENSES[delete_key];
-        return res.status(200).json({
-            status: "DELETED",
-            message: "✅ KEY NA-DELETE NA!"
-        });
+        if (!LICENSES[delete_key]) return res.status(200).json({ status: "NOTFOUND", message: "❌ Hindi mahanap" });
+        delete LICENSES[delete_key]; // ✅ TINATANGGAL TALAGA!
+        return res.status(200).json({ status: "DELETED", message: "✅ KEY NA-DELETE NA PERMANENTE!" });
     }
 
-    // ✅ VERIFY KEY — PARA SA INJECTOR
-    if (!user_key) {
-        return res.status(400).json({ status: "ERROR", message: "Kailangan ng License Key!" });
-    }
-
-    const keyData = LICENSES[user_key];
-    if (!keyData) {
-        return res.status(200).json({ status: "INVALID", message: "❌ Hindi nakarehistro ang Key." });
-    }
-    if (!keyData.active) {
-        return res.status(200).json({ status: "EXPIRED", message: "⚠️ Hindi na aktibo ang Key." });
-    }
-
-    return res.status(200).json({
-        status: "VALID",
-        message: "✅ LICENSE VERIFIED! WELCOME!",
-        key: user_key,
-        game: game || keyData.game,
-        serial: serial
-    });
+    // ✅ VERIFY — AGAD!
+    if (!user_key) return res.status(400).json({ status: "ERROR", message: "Kailangan ng Key!" });
+    const k = LICENSES[user_key];
+    if (!k) return res.status(200).json({ status: "INVALID", message: "❌ Hindi nakarehistro" });
+    if (!k.active) return res.status(200).json({ status: "EXPIRED", message: "⚠️ Hindi na aktibo" });
+    return res.status(200).json({ status: "VALID", message: "✅ LICENSE VALID!" });
 }
