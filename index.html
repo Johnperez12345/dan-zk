@@ -27,10 +27,11 @@
         .result.error { background:rgba(239,68,68,0.15); color:#f87171; display:block; }
         .key-item { display:flex; justify-content:space-between; align-items:center; padding:10px; background:rgba(15,23,42,0.6); border-radius:6px; margin-bottom:8px; flex-wrap:wrap; gap:8px; }
         .key-info { flex:1; min-width:200px; }
-        .key-actions { display:flex; gap:5px; }
+        .key-actions { display:flex; gap:5px; flex-wrap:wrap; }
         .status-on { color:#34d399; font-weight:bold; }
         .status-off { color:#f87171; font-weight:bold; }
         .hidden-section { display:none; }
+        .copy-btn { font-size:12px; padding:4px 8px; margin-left:8px; }
     </style>
 </head>
 <body>
@@ -50,7 +51,7 @@
         <div class="result" id="loginRes"></div>
     </div>
 
-    <!-- ✅ MAIN PANEL — HINDI LALABAS HANGGANG HINDI NAKA-LOGIN -->
+    <!-- ✅ MAIN PANEL -->
     <div id="mainPanel" class="hidden-section">
         <!-- ✅ TABS -->
         <div class="tabs">
@@ -76,10 +77,10 @@
             </div>
         </div>
 
-        <!-- ✅ KEY STATUS TAB — BAGONG DAGDAG! -->
+        <!-- ✅ KEY STATUS TAB -->
         <div id="tab-keys" class="hidden-section">
             <div class="card">
-                <h2>📋 Key Management — ON / OFF / DELETE</h2>
+                <h2>📋 Key Management — ON / OFF / DELETE / COPY</h2>
                 <button class="btn btn-blue" onclick="loadKeyList()">🔄 REFRESH LIST</button>
                 <div id="keyList"></div>
             </div>
@@ -110,7 +111,8 @@
 </div>
 
 <script>
-const API_URL = "https://dan-zk.vercel.app/api/verify";
+// ✅ TAMA ANG API URL — WALANG DOBLE!
+const API_URL = "/api/verify";
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "admin123"; // ✅ PALITAN MO ITO!
 let isLoggedIn = false;
@@ -147,18 +149,18 @@ async function generateKey() {
     const res = await fetch(API_URL + "?action=generate&game=" + encodeURIComponent(g) + "&days=" + d);
     const data = await res.json();
     if (data.status === "GENERATED") {
-        showRes("✅ BAGONG KEY NABUO NA!\n\n🔑 KEY: " + data.key + "\n🎮 Game: " + data.game + "\n📋 KOPYAHIN MO ITO!", "success", "genResult");
-    } else showRes("❌ ERROR: " + data.message, "error", "genResult");
+        showRes("✅ BAGONG KEY NABUO NA!\n\n🔑 KEY: " + data.key + "\n🎮 Game: " + data.game + "\n\n📋 I-COPY MO ANG KEY NA ITO!", "success", "genResult");
+    } else showRes("❌ ERROR: " + (data.message || "Hindi mabuo ang Key"), "error", "genResult");
 }
 
-// ✅ LOAD KEY LIST — BAGONG FEATURE!
+// ✅ LOAD KEY LIST — MAY COPY BUTTON!
 async function loadKeyList() {
     const res = await fetch(API_URL + "?action=list");
     const data = await res.json();
     const listDiv = document.getElementById("keyList");
     
     if (data.status !== "SUCCESS") {
-        listDiv.innerHTML = "<p style='color:red;'>❌ HINDI MA-LOAD ANG LISTAHAN</p>";
+        listDiv.innerHTML = "<p style='color:red;'>❌ HINDI MA-LOAD ANG LISTAHAN: " + (data.message || "Unknown Error") + "</p>";
         return;
     }
 
@@ -169,7 +171,7 @@ async function loadKeyList() {
         html += `
         <div class="key-item">
             <div class="key-info">
-                <div><strong>${key}</strong></div>
+                <div><strong>${key}</strong> <button class="btn copy-btn" onclick="copyText('${key}')">📋 COPY</button></div>
                 <div style="font-size:12px; color:#94a3b8;">Game: ${info.game} | <span class="${statusClass}">${statusText}</span></div>
             </div>
             <div class="key-actions">
@@ -181,21 +183,36 @@ async function loadKeyList() {
     listDiv.innerHTML = html;
 }
 
+// ✅ COPY KEY
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("✅ NA-COPY NA!\n" + text);
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert("✅ NA-COPY NA!\n" + text);
+    });
+}
+
 // ✅ I-ON / I-OFF ANG KEY
 async function toggleKey(key, newStatus) {
     const res = await fetch(API_URL + "?action=set-status&user_key=" + encodeURIComponent(key) + "&status=" + (newStatus?"true":"false"));
     const data = await res.json();
-    alert(data.message || "✅ NA-UPDATE!");
-    loadKeyList();
+    alert(data.message || "✅ NA-UPDATE ANG STATUS!");
+    loadKeyList(); // ✅ I-REFRESH AGAD ANG LISTAHAN
 }
 
 // ✅ I-DELETE ANG KEY
 async function deleteKey(key) {
-    if (!confirm("Sigurado ka bang I-DELETE ang key na ito?\n" + key)) return;
+    if (!confirm("Sigurado ka bang I-DELETE ang key na ito?\n\n" + key)) return;
     const res = await fetch(API_URL + "?action=delete&delete_key=" + encodeURIComponent(key));
     const data = await res.json();
-    alert(data.message || "✅ NA-DELETE!");
-    loadKeyList();
+    alert(data.message || "✅ NA-DELETE NA!");
+    loadKeyList(); // ✅ I-REFRESH AGAD ANG LISTAHAN
 }
 
 // ✅ VERIFY KEY
