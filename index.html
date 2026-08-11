@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAN ZK PANEL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body {
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,255,136,0.2);
+            width: 100%;
+            max-width: 420px;
+            border: 2px solid #00ff88;
+        }
+        h1 {
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+        .info-box {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #00ff88;
+        }
+        .info-text {
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .info-text span {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0f3460;
+            border: 2px solid #00ff88;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #00cc6a;
+        }
+        .btn-blue {
+            background: #00aaff;
+            margin-top: 8px;
+        }
+        .btn-blue:hover {
+            background: #008fdd;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 12px;
+            background: #000;
+            border-radius: 8px;
+            color: #00ff88;
+            text-align: center;
+            font-size: 13px;
+            border: 1px solid #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 DAN ZK PANEL</h1>
+
+        <!-- 📅 INFO BOX -->
+        <div class="info-box">
+            <p class="info-text">📅 TAON: <span id="year">2026</span></p>
+            <p class="info-text">⏰ ARAW NA NAKALIPAS: <span id="days">123</span> ARAW</p>
+            <p class="info-text">👤 KABUUANG GUMAGAMIT: <span id="users">1,234</span> NA TAO</p>
+            <p class="info-text">✅ SERVER STATUS: <span style="color:lime;">ONLINE</span></p>
+        </div>
+
+        <!-- 🔑 KEY GENERATOR -->
+        <input type="text" class="input-box" placeholder="Ilagay ang Username" id="username">
+        <button class="btn" onclick="generateKey()">🔑 GENERATE KEY</button>
+        <input type="text" class="result-box" placeholder="--- ANG KEY LALABAS DITO ---" id="result" readonly>
+        
+        <button class="btn btn-blue" onclick="checkStatus()">📡 CHECK SERVER</button>
+    </div>
+
+    <script>
+        // ✅ AUTOMATIC DATE & USER COUNT
+        const startDate = new Date("2026-01-01"); // Simula ng serbisyo
+        const today = new Date();
+        const diffTime = Math.abs(today - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        document.getElementById("year").textContent = today.getFullYear();
+        document.getElementById("days").textContent = diffDays;
+        document.getElementById("users").textContent = Math.floor(Math.random() * 9000 + 1000).toLocaleString();
+
+        // ✅ GENERATE KEY FUNCTION
+        function generateKey() {
+            let user = document.getElementById("username").value.trim();
+            if(!user) { 
+                alert("❌ Ilagay muna ang Username!"); 
+                return; 
+            }
+            let randomPart = Math.random().toString(36).substring(2, 10).toUpperCase();
+            let key = "DAN-" + user.toUpperCase() + "-" + randomPart;
+            document.getElementById("result").value = key;
+            alert("✅ KEY GENERATED!\n\n" + key);
+        }
+
+        // ✅ CHECK SERVER STATUS
+        function checkStatus() {
+            fetch("/api/verify")
+                .then(res => res.json())
+                .then(data => {
+                    alert("✅ SERVER ONLINE!\nStatus: " + data.status);
+                })
+                .catch(err => {
+                    alert("❌ SERVER OFFLINE O HINDI MAKAKONEKTA!");
+                });
+        }
+    </script>
+</body>
+</html>
