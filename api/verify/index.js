@@ -39,7 +39,7 @@ export default function handler(req, res) {
         });
     }
 
-    // ✅ VERIFY KEY (Gaya ng dati)
+    // ✅ VERIFY KEY
     if (!user_key) {
         return res.status(400).json({
             status: "ERROR",
