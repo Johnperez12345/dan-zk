@@ -1,1 +1,71 @@
-{"status":"VALID"}
+// ✅ API /api/verify — LICENSE CHECKER + KEY GENERATOR
+const LICENSES = {
+    "YUKI-POGI": { active: true, game: "PUBG", maxDevices: 3 },
+    "YUKI-TEST": { active: true, game: "PUBG", maxDevices: 5 },
+    "DEMO-KEY": { active: false, game: "PUBG", maxDevices: 1 }
+};
+
+// ✅ BUMUO NG BAGONG KEY
+function generateNewKey(game = "PUBG", days = 30) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let random = "";
+    for (let i = 0; i < 12; i++) {
+        random += chars[Math.floor(Math.random() * chars.length)];
+    }
+    const newKey = `${game}-${random}`;
+    
+    LICENSES[newKey] = {
+        active: true,
+        game: game,
+        maxDevices: 3,
+        createdAt: new Date().toISOString(),
+        expiresInDays: days
+    };
+    
+    return newKey;
+}
+
+export default function handler(req, res) {
+    const { action, game, user_key, serial, days } = req.query;
+
+    // ✅ GENERATE NEW KEY
+    if (action === "generate") {
+        const newKey = generateNewKey(game || "PUBG", parseInt(days) || 30);
+        return res.status(200).json({
+            status: "GENERATED",
+            key: newKey,
+            game: game || "PUBG",
+            message: "✅ Bagong License Key NABUO NA!"
+        });
+    }
+
+    // ✅ VERIFY KEY (Gaya ng dati)
+    if (!user_key) {
+        return res.status(400).json({
+            status: "ERROR",
+            message: "Kailangan ng License Key!"
+        });
+    }
+
+    const keyData = LICENSES[user_key];
+    if (!keyData) {
+        return res.status(200).json({
+            status: "INVALID",
+            message: "❌ Hindi nakarehistro ang License Key na ito."
+        });
+    }
+    if (!keyData.active) {
+        return res.status(200).json({
+            status: "EXPIRED",
+            message: "⚠️ Hindi na aktibo ang License Key na ito."
+        });
+    }
+
+    return res.status(200).json({
+        status: "VALID",
+        message: "✅ LICENSE VERIFIED! WELCOME!",
+        key: user_key,
+        game: game || keyData.game,
+        serial: serial
+    });
+}
