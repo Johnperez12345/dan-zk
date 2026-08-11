@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAN ZK PANEL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body {
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0,255,136,0.2);
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid #00ff88;
+        }
+        h1 {
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0f3460;
+            border: 2px solid #00ff88;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #00cc6a;
+        }
+        .status-box {
+            margin-top: 20px;
+            padding: 12px;
+            background: #0f3460;
+            border-radius: 8px;
+            color: #fff;
+            text-align: center;
+            font-size: 13px;
+        }
+        .users {
+            color: #00ff88;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 DAN ZK PANEL</h1>
+        <input type="text" class="input-box" placeholder="Ilagay ang Username" id="username">
+        <button class="btn" onclick="generateKey()">GENERATE KEY</button>
+        <input type="text" class="input-box" placeholder="--- ANG KEY LALABAS DITO ---" id="result" readonly>
+        <div class="users">👤 TOTAL USERS: 0</div>
+        <button class="btn" style="background:#00aaff;" onclick="checkStatus()">SERVER STATUS</button>
+        <div class="status-box" id="status">✅ ONLINE</div>
+    </div>
+
+    <script>
+        function generateKey() {
+            let user = document.getElementById("username").value;
+            if(!user) { alert("❌ Ilagay muna ang Username!"); return; }
+            let key = "DAN-" + user.toUpperCase() + "-" + Math.random().toString(36).substring(2,10).toUpperCase();
+            document.getElementById("result").value = key;
+        }
+        function checkStatus() {
+            document.getElementById("status").innerHTML = "✅ SERVER ONLINE ✅";
+        }
+    </script>
+</body>
+</html>
