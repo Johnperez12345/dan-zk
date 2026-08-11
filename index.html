@@ -32,6 +32,7 @@
         .status-off { color:#f87171; font-weight:bold; }
         .hidden-section { display:none; }
         .copy-btn { font-size:12px; padding:4px 8px; margin-left:8px; }
+        .loading { color:#facc15; display:none; margin-top:8px; }
     </style>
 </head>
 <body>
@@ -40,7 +41,7 @@
     <h1>🔐 LICENSE PANEL</h1>
     <p class="subtitle">dan-zk.vercel.app — Admin Only</p>
 
-    <!-- ✅ LOGIN SECTION -->
+    <!-- LOGIN -->
     <div id="loginCard" class="card">
         <h2>🔑 Admin Login</h2>
         <label>Username</label>
@@ -51,16 +52,15 @@
         <div class="result" id="loginRes"></div>
     </div>
 
-    <!-- ✅ MAIN PANEL -->
+    <!-- MAIN PANEL -->
     <div id="mainPanel" class="hidden-section">
-        <!-- ✅ TABS -->
         <div class="tabs">
             <div class="tab active" onclick="switchTab('generate')">➕ Generate Key</div>
             <div class="tab" onclick="switchTab('keys')">📋 Key Status</div>
             <div class="tab" onclick="switchTab('verify')">✅ Verify Key</div>
         </div>
 
-        <!-- ✅ GENERATE KEY TAB -->
+        <!-- GENERATE KEY -->
         <div id="tab-generate">
             <div class="card">
                 <h2>➕ Generate New License Key</h2>
@@ -68,56 +68,47 @@
                 <select id="genGame">
                     <option value="CODM" selected>CODM</option>
                     <option value="PUBG">PUBG</option>
-                    <option value="FREEFIRE">Free Fire</option>
                 </select>
-                <label>Validity (Days)</label>
-                <input type="number" id="genDays" value="30" min="1">
                 <button class="btn btn-green" onclick="generateKey()">✨ GENERATE KEY</button>
+                <div class="loading" id="genLoad">⏳ Gumagawa ng Key...</div>
                 <div class="result" id="genResult"></div>
             </div>
         </div>
 
-        <!-- ✅ KEY STATUS TAB -->
+        <!-- KEY STATUS -->
         <div id="tab-keys" class="hidden-section">
             <div class="card">
-                <h2>📋 Key Management — ON / OFF / DELETE / COPY</h2>
+                <h2>📋 Key Management</h2>
                 <button class="btn btn-blue" onclick="loadKeyList()">🔄 REFRESH LIST</button>
+                <div class="loading" id="listLoad">⏳ Nilo-load...</div>
                 <div id="keyList"></div>
             </div>
         </div>
 
-        <!-- ✅ VERIFY KEY TAB -->
+        <!-- VERIFY -->
         <div id="tab-verify" class="hidden-section">
             <div class="card">
                 <h2>✅ Verify License Key</h2>
                 <label>License Key</label>
                 <input type="text" id="licKey" placeholder="Ilagay ang License Key...">
-                <label>Game</label>
-                <input type="text" id="game" value="CODM">
-                <label>Device Serial</label>
-                <input type="text" id="serial" value="device-001">
                 <button class="btn btn-blue" onclick="checkKey()">🔍 VERIFY KEY</button>
                 <div class="result" id="resBox"></div>
             </div>
         </div>
 
-        <!-- ✅ API INFO -->
         <div class="card">
             <h2>📡 API Endpoint</h2>
-            <p style="color:#94a3b8; font-size:14px; margin-bottom:8px;">Gamitin sa Injector:</p>
-            <code style="background:rgba(15,23,42,0.8); padding:10px; border-radius:6px; color:#34d399; display:block; word-break:break-all;">https://dan-zk.vercel.app/api/verify</code>
+            <code style="background:rgba(15,23,42,0.8); padding:10px; border-radius:6px; color:#34d399; display:block; word-break:break-all; margin-top:8px;">https://dan-zk.vercel.app/api/verify</code>
         </div>
     </div>
 </div>
 
 <script>
-// ✅ TAMA ANG API URL — WALANG DOBLE!
 const API_URL = "/api/verify";
 const ADMIN_USER = "admin";
-const ADMIN_PASS = "admin123"; // ✅ PALITAN MO ITO!
+const ADMIN_PASS = "admin123";
 let isLoggedIn = false;
 
-// ✅ LOGIN
 function adminLogin() {
     const u = document.getElementById("username").value.trim();
     const p = document.getElementById("password").value.trim();
@@ -125,13 +116,11 @@ function adminLogin() {
         isLoggedIn = true;
         document.getElementById("loginCard").style.display = "none";
         document.getElementById("mainPanel").style.display = "block";
-        showRes("✅ NAKA-LOGIN NA!", "success", "loginRes");
     } else {
-        showRes("❌ MALI NA USERNAME O PASSWORD!", "error", "loginRes");
+        alert("❌ MALI NA USERNAME O PASSWORD!");
     }
 }
 
-// ✅ SWITCH TABS
 function switchTab(name) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
@@ -142,48 +131,71 @@ function switchTab(name) {
     if (name === 'keys') loadKeyList();
 }
 
-// ✅ GENERATE KEY
+// ✅ MAS MABILIS NA GENERATE — AGAD ANG RESPONSE!
 async function generateKey() {
     const g = document.getElementById("genGame").value;
-    const d = document.getElementById("genDays").value;
-    const res = await fetch(API_URL + "?action=generate&game=" + encodeURIComponent(g) + "&days=" + d);
-    const data = await res.json();
-    if (data.status === "GENERATED") {
-        showRes("✅ BAGONG KEY NABUO NA!\n\n🔑 KEY: " + data.key + "\n🎮 Game: " + data.game + "\n\n📋 I-COPY MO ANG KEY NA ITO!", "success", "genResult");
-    } else showRes("❌ ERROR: " + (data.message || "Hindi mabuo ang Key"), "error", "genResult");
+    document.getElementById("genLoad").style.display = "block";
+    document.getElementById("genResult").style.display = "none";
+
+    try {
+        const res = await fetch(API_URL + "?action=generate&game=" + encodeURIComponent(g));
+        const data = await res.json();
+        document.getElementById("genLoad").style.display = "none";
+
+        if (data.status === "GENERATED") {
+            document.getElementById("genResult").className = "result success";
+            document.getElementById("genResult").innerHTML = 
+                "✅ BAGONG KEY NABUO NA!\n\n🔑 KEY: <strong>" + data.key + "</strong>\n\n" +
+                "<button class='btn btn-green copy-btn' onclick='copyText(\"" + data.key + "\")'>📋 COPY KEY</button>";
+        } else {
+            document.getElementById("genResult").className = "result error";
+            document.getElementById("genResult").textContent = "❌ ERROR: " + (data.message || "Hindi mabuo");
+        }
+    } catch (e) {
+        document.getElementById("genLoad").style.display = "none";
+        alert("❌ WALANG KONEKTA SA SERVER!");
+    }
 }
 
-// ✅ LOAD KEY LIST — MAY COPY BUTTON!
+// ✅ AGAD NAGRE-REFRESH PAG-LOAD!
 async function loadKeyList() {
-    const res = await fetch(API_URL + "?action=list");
-    const data = await res.json();
-    const listDiv = document.getElementById("keyList");
-    
-    if (data.status !== "SUCCESS") {
-        listDiv.innerHTML = "<p style='color:red;'>❌ HINDI MA-LOAD ANG LISTAHAN: " + (data.message || "Unknown Error") + "</p>";
-        return;
-    }
+    document.getElementById("listLoad").style.display = "block";
+    document.getElementById("keyList").innerHTML = "";
 
-    let html = "<p style='color:#94a3b8; margin:8px 0;'>Total Keys: " + data.totalKeys + "</p>";
-    for (const [key, info] of Object.entries(data.keys)) {
-        const statusClass = info.active ? "status-on" : "status-off";
-        const statusText = info.active ? "✅ ACTIVE" : "❌ INACTIVE";
-        html += `
-        <div class="key-item">
-            <div class="key-info">
-                <div><strong>${key}</strong> <button class="btn copy-btn" onclick="copyText('${key}')">📋 COPY</button></div>
-                <div style="font-size:12px; color:#94a3b8;">Game: ${info.game} | <span class="${statusClass}">${statusText}</span></div>
-            </div>
-            <div class="key-actions">
-                <button class="btn ${info.active?'btn-gray':'btn-green'}" onclick="toggleKey('${key}', ${!info.active})">${info.active?'🔴 OFF':'🟢 ON'}</button>
-                <button class="btn btn-red" onclick="deleteKey('${key}')">🗑️ DELETE</button>
-            </div>
-        </div>`;
+    try {
+        const res = await fetch(API_URL + "?action=list");
+        const data = await res.json();
+        document.getElementById("listLoad").style.display = "none";
+
+        if (data.status !== "SUCCESS") {
+            document.getElementById("keyList").innerHTML = "<p style='color:red;'>❌ ERROR: " + (data.message || "Hindi ma-load") + "</p>";
+            return;
+        }
+
+        let html = "<p style='color:#94a3b8; margin:8px 0;'>📋 Total Keys: <strong>" + data.totalKeys + "</strong></p>";
+        for (const [key, info] of Object.entries(data.keys)) {
+            const statusClass = info.active ? "status-on" : "status-off";
+            const statusText = info.active ? "✅ ACTIVE" : "❌ INACTIVE";
+            html += `
+            <div class="key-item">
+                <div class="key-info">
+                    <div><strong>${key}</strong> <button class="btn copy-btn" onclick="copyText('${key}')">📋 COPY</button></div>
+                    <div style="font-size:12px; color:#94a3b8;">Game: ${info.game} | <span class="${statusClass}">${statusText}</span></div>
+                </div>
+                <div class="key-actions">
+                    <button class="btn ${info.active?'btn-gray':'btn-green'}" onclick="toggleKey('${key}', ${!info.active})">${info.active?'🔴 OFF':'🟢 ON'}</button>
+                    <button class="btn btn-red" onclick="deleteKey('${key}')">🗑️ DELETE</button>
+                </div>
+            </div>`;
+        }
+        document.getElementById("keyList").innerHTML = html;
+    } catch (e) {
+        document.getElementById("listLoad").style.display = "none";
+        alert("❌ HINDI MA-LOAD ANG LISTAHAN!");
     }
-    listDiv.innerHTML = html;
 }
 
-// ✅ COPY KEY
+// ✅ COPY FUNCTION
 function copyText(text) {
     navigator.clipboard.writeText(text).then(() => {
         alert("✅ NA-COPY NA!\n" + text);
@@ -198,41 +210,45 @@ function copyText(text) {
     });
 }
 
-// ✅ I-ON / I-OFF ANG KEY
+// ✅ I-ON/OFF — AGAD NAGRE-REFRESH!
 async function toggleKey(key, newStatus) {
-    const res = await fetch(API_URL + "?action=set-status&user_key=" + encodeURIComponent(key) + "&status=" + (newStatus?"true":"false"));
-    const data = await res.json();
-    alert(data.message || "✅ NA-UPDATE ANG STATUS!");
-    loadKeyList(); // ✅ I-REFRESH AGAD ANG LISTAHAN
+    try {
+        await fetch(API_URL + "?action=set-status&user_key=" + encodeURIComponent(key) + "&status=" + (newStatus?"true":"false"));
+        loadKeyList(); // ✅ AGAD NA-REFRESH!
+    } catch (e) {
+        alert("❌ HINDI MA-UPDATE!");
+    }
 }
 
-// ✅ I-DELETE ANG KEY
+// ✅ DELETE — AGAD NAWAWALA! AGAD NAGRE-REFRESH!
 async function deleteKey(key) {
-    if (!confirm("Sigurado ka bang I-DELETE ang key na ito?\n\n" + key)) return;
-    const res = await fetch(API_URL + "?action=delete&delete_key=" + encodeURIComponent(key));
-    const data = await res.json();
-    alert(data.message || "✅ NA-DELETE NA!");
-    loadKeyList(); // ✅ I-REFRESH AGAD ANG LISTAHAN
+    if (!confirm("Sigurado ka bang I-DELETE?\n\n" + key)) return;
+    try {
+        await fetch(API_URL + "?action=delete&delete_key=" + encodeURIComponent(key));
+        alert("✅ KEY NA-DELETE NA!");
+        loadKeyList(); // ✅ AGAD NAWAWALA! AGAD NA-REFRESH ANG LISTAHAN!
+    } catch (e) {
+        alert("❌ HINDI MA-DELETE!");
+    }
 }
 
-// ✅ VERIFY KEY
 async function checkKey() {
     const k = document.getElementById("licKey").value.trim();
-    const g = document.getElementById("game").value.trim();
-    const s = document.getElementById("serial").value.trim();
-    if (!k) { showRes("❌ Ilagay muna ang License Key!", "error", "resBox"); return; }
-    const res = await fetch(API_URL + "?game=" + encodeURIComponent(g) + "&user_key=" + encodeURIComponent(k) + "&serial=" + encodeURIComponent(s));
-    const data = await res.json();
-    if (data.status === "VALID") showRes("✅ LICENSE VALID!\n\n🔑 Key: " + k + "\n📱 Device: " + s, "success", "resBox");
-    else showRes("❌ " + (data.message || "INVALID KEY"), "error", "resBox");
-}
-
-function showRes(msg, type, boxId) {
-    const box = document.getElementById(boxId);
-    box.className = "result " + type;
-    box.textContent = msg;
+    if (!k) { alert("❌ Ilagay muna ang Key!"); return; }
+    try {
+        const res = await fetch(API_URL + "?user_key=" + encodeURIComponent(k) + "&game=CODM&serial=test");
+        const data = await res.json();
+        if (data.status === "VALID") {
+            document.getElementById("resBox").className = "result success";
+            document.getElementById("resBox").textContent = "✅ VALID!\n" + (data.message || "");
+        } else {
+            document.getElementById("resBox").className = "result error";
+            document.getElementById("resBox").textContent = "❌ " + (data.message || "INVALID KEY");
+        }
+    } catch (e) {
+        alert("❌ WALANG KONEKTA!");
+    }
 }
 </script>
-
 </body>
 </html>
